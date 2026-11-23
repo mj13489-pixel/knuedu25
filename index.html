@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>학급 보상 상점</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="보상 상점">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--p:#4f46e5;--p2:#eef2ff;--bg:#f5f6fb;--tx:#1f2330;--mu:#6b7280;--ok:#16a34a;--no:#dc2626;--wait:#d97706;--ln:#e5e7eb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;font-size:16px;line-height:1.45}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px calc(92px + env(safe-area-inset-bottom))}
+h1{font-size:22px;margin:0}h2{font-size:17px;margin:20px 0 10px}
+.mu{color:var(--mu);font-size:14px}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(20,20,60,.08);margin-bottom:12px}
+label{display:block;font-size:14px;color:var(--mu);margin-bottom:12px}
+input[type=text],input[type=password],input[type=number],input:not([type]){display:block;width:100%;margin-top:6px;padding:12px;font-size:16px;border:1.5px solid var(--ln);border-radius:12px;background:#fff;color:var(--tx)}
+input:focus{outline:none;border-color:var(--p)}
+.chk{display:flex;align-items:center;gap:8px}.chk input{width:18px;height:18px;margin:0}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-size:16px;font-weight:700;background:var(--p);color:#fff;cursor:pointer}
+.btn.sm{width:auto;padding:9px 16px;font-size:14px}
+.btn.ghost{background:var(--p2);color:var(--p)}
+.btn.no{background:#fee2e2;color:var(--no)}
+.btn:disabled{background:#d1d5db;color:#fff;cursor:not-allowed}
+.link{background:none;border:0;color:var(--p);font-size:14px;padding:12px;cursor:pointer;width:100%}
+.login{text-align:center;padding-top:8vh}.login .logo{font-size:56px}.login form{text-align:left;margin-top:20px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.top .who{font-weight:700;font-size:18px}
+.iconbtn{background:#fff;border:0;border-radius:10px;padding:8px 12px;font-size:14px;color:var(--mu);box-shadow:0 1px 2px rgba(0,0,0,.08);cursor:pointer;margin-left:6px}
+.bal{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-radius:20px;padding:22px;margin-bottom:14px}
+.bal .n{font-size:40px;font-weight:800}.bal .l{opacity:.85;font-size:14px}
+.item{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.item .info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.item .buy{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.price{font-weight:800;color:var(--p);font-size:18px}
+.stock{font-size:12px;color:var(--mu)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--ln);gap:10px}
+.row:last-child{border-bottom:0}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px}
+.chip.ok{background:#dcfce7;color:var(--ok)}.chip.no{background:#fee2e2;color:var(--no)}.chip.wait{background:#fef3c7;color:var(--wait)}
+.pos{color:var(--ok);font-weight:800}.neg{color:var(--no);font-weight:800}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--ln);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{flex:1;border:0;background:none;padding:12px 4px 10px;font-size:13px;color:var(--mu);cursor:pointer;position:relative}
+nav button b{display:block;font-size:20px;font-weight:400}
+nav button.on{color:var(--p);font-weight:700}
+.badge{position:absolute;top:6px;left:calc(50% + 8px);background:var(--no);color:#fff;border-radius:99px;font-size:11px;min-width:18px;padding:1px 5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.chips button{border:1.5px solid var(--ln);background:#fff;border-radius:99px;padding:6px 12px;font-size:14px;cursor:pointer}
+.stuchk{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);margin:0;color:var(--tx);font-size:16px}
+.stuchk input{width:20px;height:20px;margin:0}.stuchk span.b{margin-left:auto;color:var(--mu);font-size:14px}
+.empty{text-align:center;color:var(--mu);padding:28px 0}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center;z-index:9}
+#toast.show{opacity:.96}#toast.err{background:var(--no)}
+body.busy::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--p),transparent);background-size:50% 100%;animation:ld 1s linear infinite;z-index:20}
+body.busy .btn{opacity:.6;pointer-events:none}
+@keyframes ld{from{background-position:-50% 0}to{background-position:150% 0}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+<script src="config.js"></script>
+<script>
+'use strict';
+const $app = document.getElementById('app');
+const S = { view: 'login', tab: 'shop', data: null, t: null, creds: null, tpw: null, sel: new Set(), busy: false };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = n => Number(n).toLocaleString('ko-KR');
+
+/* ── 유틸 ── */
+let toastTimer;
+function toast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show' + (err ? ' err' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = '', 2800);
+}
+async function api(action, payload) {
+  if (!API_URL) throw new Error('config.js 에 API_URL 을 먼저 입력하세요.');
+  let res;
+  try {
+    res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action }, payload || {})) });
+  } catch (e) { throw new Error('서버에 연결할 수 없습니다. 인터넷 연결을 확인하세요.'); }
+  let j;
+  try { j = await res.json(); } catch (e) { throw new Error('서버 응답을 읽을 수 없습니다. 배포 설정(액세스: 모든 사용자)을 확인하세요.'); }
+  if (!j.ok) throw new Error(j.error || '오류가 발생했습니다.');
+  return j.data;
+}
+async function run(fn, silent) {
+  if (S.busy) return;
+  S.busy = true; document.body.classList.add('busy');
+  try { return await fn(); }
+  catch (e) { if (!silent) toast(e.message || String(e), true); }
+  finally { S.busy = false; document.body.classList.remove('busy'); }
+}
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem('rs') || sessionStorage.getItem('rs') || 'null'); } catch (e) { return null; } },
+  set(c, keep) { this.clear(); try { (keep ? localStorage : sessionStorage).setItem('rs', JSON.stringify(c)); } catch (e) {} },
+  clear() { try { localStorage.removeItem('rs'); sessionStorage.removeItem('rs'); } catch (e) {} },
+};
+
+/* ── 화면 ── */
+function render() {
+  $app.innerHTML = S.view === 'login' ? viewLogin() : S.view === 'tlogin' ? viewTLogin() : S.view === 'student' ? viewStudent() : viewTeacher();
+  window.scrollTo(0, 0);
+}
+function viewLogin() {
+  return `<div class="wrap login"><div class="logo">🏪</div><h1>학급 보상 상점</h1>
+  <p class="mu">내 ID와 PIN으로 로그인하세요</p>
+  <form class="card" data-form="login">
+    <label>학생 ID<input name="id" required autocomplete="username"></label>
+    <label>PIN (4자리)<input name="pin" type="password" maxlength="4" required autocomplete="current-password"></label>
+    <label class="chk"><input type="checkbox" name="remember"> 이 기기에서 로그인 유지</label>
+    <button class="btn">로그인</button>
+  </form>
+  <button class="link" data-act="goT">교사용 로그인</button></div>`;
+}
+function viewTLogin() {
+  return `<div class="wrap login"><div class="logo">🧑‍🏫</div><h1>교사 모드</h1>
+  <form class="card" data-form="tlogin"><label>교사 암호<input name="tpw" type="password" required autocomplete="current-password"></label>
+  <button class="btn">들어가기</button></form>
+  <button class="link" data-act="goS">← 학생 로그인으로</button></div>`;
+}
+
+function viewStudent() {
+  const { student: s, items, history } = S.data;
+  let body = '';
+  if (S.tab === 'shop') {
+    body = (items.length ? items.map(it => {
+      const dis = it.stock <= 0 || s.balance < it.price;
+      const label = it.stock <= 0 ? '품절' : s.balance < it.price ? '포인트 부족' : '구매';
+      return `<div class="card item"><div class="info"><b>${esc(it.name)}</b><span class="mu">${esc(it.desc)}</span><span class="stock">재고 ${num(it.stock)}개</span></div>
+      <div class="buy"><div class="price">${num(it.price)}P</div><button class="btn sm" data-act="buy" data-id="${esc(it.id)}" ${dis ? 'disabled' : ''}>${label}</button></div></div>`;
+    }).join('') : '<div class="empty">판매 중인 아이템이 없어요</div>');
+  } else if (S.tab === 'hist') {
+    body = history.length ? `<div class="card">${history.map(h => {
+      const cls = h.status === '승인대기' ? 'wait' : (h.status === '승인' || h.status === '지급') ? 'ok' : 'no';
+      return `<div class="row"><div><b>${esc(h.item)}</b><span class="chip ${cls}">${esc(h.status)}</span><div class="mu">${esc(h.time)}</div></div>
+      <div class="${h.change > 0 ? 'pos' : 'neg'}">${h.change > 0 ? '+' : ''}${num(h.change)}P</div></div>`;
+    }).join('')}</div>` : '<div class="empty">아직 내역이 없어요</div>';
+  } else {
+    body = `<form class="card" data-form="pin"><b>PIN 변경</b><p class="mu">영문/숫자 4자리</p>
+      <label>현재 PIN<input name="old" type="password" maxlength="4" required></label>
+      <label>새 PIN<input name="n1" type="password" maxlength="4" required></label>
+      <label>새 PIN 확인<input name="n2" type="password" maxlength="4" required></label>
+      <button class="btn">변경하기</button></form>
+      <div class="card"><div class="mu">ID: ${esc(s.id)} · 이름: ${esc(s.name)}</div><p class="mu">PIN을 잊어버렸다면 선생님께 초기화를 요청하세요.</p></div>`;
+  }
+  const tabs = [['shop', '🛍️', '상점'], ['hist', '🧾', '내 내역'], ['me', '👤', '내 정보']];
+  return `<div class="wrap"><div class="top"><div class="who">${esc(s.name)}님</div><div><button class="iconbtn" data-act="refresh">새로고침</button><button class="iconbtn" data-act="logout">로그아웃</button></div></div>
+  <div class="bal"><div class="l">내 포인트</div><div class="n">${num(s.balance)}P</div></div>${body}</div>
+  <nav>${tabs.map(t => `<button class="${S.tab === t[0] ? 'on' : ''}" data-act="tab" data-t="${t[0]}"><b>${t[1]}</b>${t[2]}</button>`).join('')}</nav>`;
+}
+
+function viewTeacher() {
+  const { students, pending, items } = S.t;
+  let body = '';
+  if (S.tab === 'tp') {
+    body = `<form class="card" data-form="adjust">
+      <b>학생 선택</b> <button type="button" class="iconbtn" data-act="selall">전체 선택/해제</button>
+      <div>${students.map(s => `<label class="stuchk"><input type="checkbox" class="stu-check" value="${esc(s.id)}" ${S.sel.has(s.id) ? 'checked' : ''}>${esc(s.name)}<span class="b">${num(s.balance)}P</span></label>`).join('') || '<div class="empty">Students 시트에 학생이 없어요</div>'}</div>
+      <label style="margin-top:14px">포인트 (감점은 -)<input name="delta" type="number" step="1" required placeholder="예: 5"></label>
+      <div class="chips">${[1, 5, 10, -1, -5].map(v => `<button type="button" data-act="qa" data-v="${v}">${v > 0 ? '+' : ''}${v}</button>`).join('')}</div>
+      <label>사유<input name="reason" maxlength="40" placeholder="예: 발표 잘함"></label>
+      <div class="chips">${['발표 참여', '청소 도우미', '숙제 완료', '친구 도움'].map(r => `<button type="button" data-act="qr" data-v="${r}">${r}</button>`).join('')}</div>
+      <button class="btn">적용하기</button></form>`;
+  } else if (S.tab === 'ta') {
+    body = pending.length ? pending.map(p => `<div class="card"><div class="row" style="border:0;padding:0 0 10px"><div><b>${esc(p.name)}</b> · ${esc(p.item)}<div class="mu">${esc(p.time)}</div></div><div class="price">${num(p.price)}P</div></div>
+      <div style="display:flex;gap:8px"><button class="btn sm" style="flex:1" data-act="decide" data-id="${esc(p.reqId)}" data-d="approve">승인</button><button class="btn sm no" style="flex:1" data-act="decide" data-id="${esc(p.reqId)}" data-d="reject">거절·환불</button></div></div>`).join('')
+      : '<div class="empty">대기 중인 구매 요청이 없어요 🎉</div>';
+  } else {
+    body = `<div class="card">${items.map(i => `<div class="row"><div><b>${esc(i.name)}</b><div class="mu">${esc(i.desc)}</div></div><div style="text-align:right"><div class="price">${num(i.price)}P</div><div class="stock">재고 ${num(i.stock)}</div></div></div>`).join('') || '<div class="empty">상품이 없어요</div>'}</div>
+      <p class="mu">상품 추가·수정·재고 변경, PIN 초기화는 구글 시트에서 직접 하세요.</p>`;
+  }
+  const tabs = [['tp', '⭐', '포인트'], ['ta', '✅', '승인'], ['ti', '📦', '상품']];
+  return `<div class="wrap"><div class="top"><div class="who">교사 모드</div><div><button class="iconbtn" data-act="refresh">새로고침</button><button class="iconbtn" data-act="logout">나가기</button></div></div>${body}</div>
+  <nav>${tabs.map(t => `<button class="${S.tab === t[0] ? 'on' : ''}" data-act="tab" data-t="${t[0]}"><b>${t[1]}</b>${t[2]}${t[0] === 'ta' && pending.length ? `<span class="badge">${pending.length}</span>` : ''}</button>`).join('')}</nav>`;
+}
+
+/* ── 동작 ── */
+async function studentLogin(id, pin, keep) {
+  S.data = await api('login', { id, pin });
+  S.creds = { id, pin }; S.view = 'student'; S.tab = 'shop';
+  store.set(S.creds, keep); render();
+}
+async function teacherLogin(pw) {
+  S.t = await api('tOverview', { tpw: pw });
+  S.tpw = pw; S.view = 'teacher'; S.tab = 'ta'; S.sel = new Set();
+  try { sessionStorage.setItem('rt', pw); } catch (e) {}
+  render();
+}
+function logout() {
+  store.clear(); try { sessionStorage.removeItem('rt'); } catch (e) {}
+  S.creds = S.tpw = S.data = S.t = null; S.view = 'login'; render();
+}
+async function refresh(silent) {
+  if (S.view === 'student') { S.data = await api('me', S.creds); }
+  else if (S.view === 'teacher') { S.t = await api('tOverview', { tpw: S.tpw }); }
+  else return;
+  render(); if (!silent) toast('새로고침 완료');
+}
+
+const A = {
+  goT: () => { S.view = 'tlogin'; render(); },
+  goS: () => { S.view = 'login'; render(); },
+  tab: b => { S.tab = b.dataset.t; render(); },
+  logout,
+  refresh: () => run(() => refresh(false)),
+  buy: b => {
+    const it = S.data.items.find(i => i.id === b.dataset.id); if (!it) return;
+    if (!confirm(`'${it.name}'을(를) ${num(it.price)}P로 구매할까요?`)) return;
+    run(async () => { const d = await api('purchase', Object.assign({ itemId: it.id }, S.creds)); S.data = d; render(); toast(d.message); });
+  },
+  decide: b => {
+    if (b.dataset.d === 'reject' && !confirm('거절하면 포인트가 환불되고 재고가 복구됩니다. 진행할까요?')) return;
+    run(async () => { const d = await api('tDecide', { tpw: S.tpw, reqId: b.dataset.id, decision: b.dataset.d }); S.t = d; render(); toast(d.message); });
+  },
+  selall: () => {
+    const boxes = [...document.querySelectorAll('.stu-check')];
+    const all = boxes.every(c => c.checked);
+    boxes.forEach(c => { c.checked = !all; });
+    S.sel = new Set(all ? [] : boxes.map(c => c.value));
+  },
+  qa: b => { document.querySelector('[name=delta]').value = b.dataset.v; },
+  qr: b => { document.querySelector('[name=reason]').value = b.dataset.v; },
+};
+const F = {
+  login: f => run(() => studentLogin(f.id.value, f.pin.value, f.remember.checked)),
+  tlogin: f => run(() => teacherLogin(f.tpw.value)),
+  pin: f => {
+    if (f.n1.value !== f.n2.value) return toast('새 PIN이 서로 다릅니다.', true);
+    if (!/^[0-9A-Za-z]{4}$/.test(f.n1.value)) return toast('새 PIN은 영문/숫자 4자리여야 해요.', true);
+    run(async () => {
+      const r = await api('changePin', { id: S.creds.id, pin: f.old.value, newPin: f.n1.value });
+      S.creds.pin = f.n1.value;
+      if (store.get()) store.set(S.creds, !!localStorage.getItem('rs'));
+      f.reset(); toast(r.message);
+    });
+  },
+  adjust: f => {
+    if (!S.sel.size) return toast('학생을 선택하세요.', true);
+    run(async () => {
+      const d = await api('tAdjust', { tpw: S.tpw, ids: [...S.sel], delta: Number(f.delta.value), reason: f.reason.value });
+      S.t = d; S.sel = new Set(); render(); toast(d.message);
+    });
+  },
+};
+document.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b && A[b.dataset.act]) A[b.dataset.act](b); });
+document.addEventListener('submit', e => { const f = e.target.closest('form[data-form]'); if (f) { e.preventDefault(); F[f.dataset.form](f); } });
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('stu-check')) { e.target.checked ? S.sel.add(e.target.value) : S.sel.delete(e.target.value); }
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) run(() => refresh(true), true); });
+
+/* ── 시작 ── */
+(async function init() {
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  render();
+  const c = store.get();
+  if (c && API_URL) { await run(() => studentLogin(c.id, c.pin, !!localStorage.getItem('rs')), true); return; }
+  let tp = null; try { tp = sessionStorage.getItem('rt'); } catch (e) {}
+  if (tp && API_URL) await run(() => teacherLogin(tp), true);
+})();
+</script>
+</body>
+</html>
